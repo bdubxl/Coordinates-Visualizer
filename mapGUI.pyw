@@ -1,0 +1,81 @@
+from tkinter import *
+from tkinter import filedialog
+import getmap as gm
+import threading
+
+class StartApp():
+    def __init__(self):
+        self.window = Tk()
+        self.window.title('CSV Map Visualizer')
+        self.csv_path_var = StringVar()
+        self.csv_path_str = None
+        self.map_path_var = StringVar()
+        self.map_path_str = None
+        self.exe_path_var = StringVar()
+        self.exe_path_str = None
+        self.frame1 = Frame(self.window)
+        self.frame1.pack(side=TOP, expand=True)
+        self.mapframe = Frame(self.window)
+        self.mapframe.pack(side=LEFT, expand=True)
+
+    def get_csv_path(self):
+        path = filedialog.askopenfile()
+        self.csv_path_var.set(path.name)
+        self.csv_path_str = path.name
+
+    def get_map_path(self):
+        path = filedialog.asksaveasfile(defaultextension='.png')
+        self.map_path_var.set(path.name)
+        self.map_path_str = path.name
+
+    def get_exe_path(self):
+        path = filedialog.askopenfile()
+        self.exe_path_var.set(path.name)
+        self.exe_path_str = path.name
+
+    def start_visualiztion(self):
+        enter_path_label = Label(self.frame1, text='Path to CSV')
+        enter_path_label.grid(row=0, column=0)
+        enter_map_label = Label(self.frame1, text='Save map as')
+        enter_map_label.grid(row=1, column=0)
+        enter_path_label = Label(self.frame1, text='Chromedriver Excecutable path')
+        enter_path_label.grid(row=2, column=0)
+
+        csv_path_button = Button(self.frame1, text='Browse', command=self.get_csv_path)
+        csv_path_button.grid(row=0, column=1)
+        csv_path_label = Label(self.frame1, textvariable=self.csv_path_var)
+        csv_path_label.grid(row=0, column=2)
+
+        map_path_button = Button(self.frame1, text='Browse', command=self.get_map_path)
+        map_path_button.grid(row=1, column=1)
+        map_path_label = Label(self.frame1, textvariable=self.map_path_var)
+        map_path_label.grid(row=1, column=2)
+
+        exe_path_button = Button(self.frame1, text='Browse', command=self.get_exe_path)
+        exe_path_button.grid(row=2, column=1)
+        exe_path_label = Label(self.frame1, textvariable=self.exe_path_var)
+        exe_path_label.grid(row=2, column=2)
+
+        # Prevent unresponsive GUI by running visualization scripts on separate thread
+        t1 = threading.Thread(target=self.get_map)
+        start_button = Button(self.frame1, text='Begin Visualization', command=t1.start)
+        start_button.grid(row=3, column=0)
+
+    def get_map(self):
+        wait_label = Label(self.frame1, text='Please wait for image to process...')
+        wait_label.grid(row=3, column=2)
+
+        gm.get_map(self.csv_path_str, self.exe_path_str, self.map_path_str)
+
+        wait_label.destroy()
+        image = PhotoImage(file=self.map_path_str)
+        map_label = Label(self.mapframe, image=image)
+        map_label.pack()
+        map_label.image = image
+
+        finish_label = Label(self.frame1, text=f'Image downloaded to {self.map_path_str}')
+        finish_label.grid(row=3, column=2)
+
+start = StartApp()
+start.start_visualiztion()
+start.window.mainloop()
