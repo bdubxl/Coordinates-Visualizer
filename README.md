@@ -1,4 +1,4 @@
-# Coordinates-Visualizer
+# GPS Coordinates Visualizer
 
 Tkinter GUI for visualizing list of coordinates from csv sheet
 
