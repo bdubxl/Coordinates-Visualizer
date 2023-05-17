@@ -5,8 +5,8 @@ Tkinter GUI for visualizing list of coordinates from csv sheet
 ![choosefiles](https://csvguifiles.s3.amazonaws.com/ChooseFiles.jpg)
 ![finalimage](https://csvguifiles.s3.amazonaws.com/ProcessedMap.jpg)
 
+Simply input path to csv with coordinates data and the result image will be rendered automatically. 
 Green marks first coordinates, Red marks final coordinates
-
 Required libraries can be installed using "requirements.txt" file
 
 NOTES:
