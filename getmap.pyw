@@ -1,8 +1,10 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 import time
 import pandas as pd
 import drawmap as dm
+from subprocess import CREATE_NO_WINDOW
 # Script will automate gps visualization by using selenium to access OpenStreetMaps.org to get portion of map
 
 def get_map(csv_path, chromedriver_excecutable, map_path):
@@ -32,8 +34,11 @@ def get_map(csv_path, chromedriver_excecutable, map_path):
         "safebrowsing.enabled": True
     })
 
+    chrome_service = ChromeService('chromedriver')
+    chrome_service.creation_flags = CREATE_NO_WINDOW
+
     # Modifying elements of html to use input csv's coordinates to capture section of map
-    driver = webdriver.Chrome(executable_path=chromedriver_excecutable, options=options)
+    driver = webdriver.Chrome(executable_path=chromedriver_excecutable, options=options, service=chrome_service)
     driver.get(r'https://www.openstreetmap.org/export#map=13/41.0219/-73.7599')
 
     element = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[3]/div[4]/form/input[1]')
