@@ -31,33 +31,26 @@ def create_map(path, csv_path, final_map_path, coords):
 
     reader_list = list(reader)
 
-    # Convert starting point of list and append to start_point
-    for row in reader_list:
-        lat_coor, lon_coor = convert_minmax(row)
-        start_point.append([lon_coor, lat_coor])
-        break
-    # Convert ending point of list and append to end_point
-    for row in reader_list[::-1]:
-        lat_coor, lon_coor = convert_minmax(row)
-        end_point.append([lon_coor, lat_coor])
-        break
-
     # Convert all points in list and add to img_points
-    for row in reader_list:
-        lat_coor, lon_coor = convert_minmax(row)
-        img_points.append([lon_coor, lat_coor])
+    for i, row in enumerate(reader_list):
+        if i == 0:
+            lat_coor, lon_coor = convert_minmax(row)
+            start_point.append([lon_coor, lat_coor])
+        elif i == len(reader_list) - 1:
+            lat_coor, lon_coor = convert_minmax(row)
+            end_point.append([lon_coor, lat_coor])
+        else:
+            lat_coor, lon_coor = convert_minmax(row)
+            img_points.append([lon_coor, lat_coor])
 
     draw = ImageDraw.Draw(img)
 
     #Draw line for image points and circle with color for flag points
-    for i in range(len(img_points)):
-        try:
-            if img_points[i+1]:
-                line = img_points[i][0], img_points[i][1], img_points[i+1][0], img_points[i+1][1]
-                draw.line(line, fill=(0,0,255), width=4)
-            else:
-                break
-        except:
+    for i in range(len(img_points) - 1):
+        if img_points[i+1]:
+            line = img_points[i][0], img_points[i][1], img_points[i+1][0], img_points[i+1][1]
+            draw.line(line, fill=(0,0,255), width=4)
+        else:
             break
 
     for flag in start_point: #Draw start circle
